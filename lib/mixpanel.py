@@ -2,6 +2,7 @@
 import hashlib
 import urllib
 import time
+import os
 try:
     import json
 except ImportError:
@@ -29,6 +30,10 @@ class Mixpanel(object):
         params['sig'] = self.hash_args(params)
 
         request_url = '/'.join([self.ENDPOINT, str(self.VERSION)] + methods) + '/?' + self.unicode_urlencode(params)
+
+        if not os.path.exists(os.path.dirname(self.output_file)):
+            os.makedirs(os.path.dirname(self.output_file))
+            open(self.output_file, 'a').close()
         request = urllib.urlretrieve(request_url, self.output_file)
 
     def unicode_urlencode(self, params):
