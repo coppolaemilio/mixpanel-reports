@@ -3,6 +3,7 @@ import hashlib
 import urllib
 import time
 import os
+import sys
 try:
     import json
 except ImportError:
@@ -35,6 +36,14 @@ class Mixpanel(object):
             os.makedirs(os.path.dirname(self.output_file))
             open(self.output_file, 'a').close()
         request = urllib.urlretrieve(request_url, self.output_file)
+        if open(self.output_file, 'r').read().find('error'):
+            with open(self.output_file) as data_file:    
+                data = json.load(data_file)
+                print "[!] Error on request!: " + data['error']
+            raise SystemExit(0)
+        else:
+            print "[+] File ready to use."
+
 
     def unicode_urlencode(self, params):
         """
